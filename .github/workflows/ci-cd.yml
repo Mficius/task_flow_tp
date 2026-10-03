@@ -10,43 +10,42 @@ env:
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   IMAGE_TAG: ${{ github.sha }}
 
-
 jobs:
-  
   test-frontend:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
 
       - name: Executer Node js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 22 # Version LTS stable recommandée
 
       - name: Installer les dependances
         run: npm ci
 
       - name: Executer les tests
-        run: npm test -- coverage --watchAll=false
+        run: npm test -- --coverage --watchAll=false
 
   build:
     runs-on: ubuntu-24.04
+    needs: test-frontend # Optionnel: empêche le build si les tests échouent
     steps:
       - name: Checkout code
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
 
       - name: Login to Docker Hub
-        uses: docker/login-action@v4
+        uses: docker/login-action@v3
         with:
-          username: ${{ var.DOCKERHUB_USERNAME }}
+          username: ${{ secrets.DOCKER_USERNAME }} # Corrigé pour utiliser votre secret
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Construire l'image frontend
         run: |
           docker build \
-            -t $DOCKER_USERNAME/taskFlow:$IMAGE_TAG .
+            -t ${{ env.DOCKER_USERNAME }}/taskFlow:${{ env.IMAGE_TAG }} .
 
       - name: Pusher l'image 
         run: |
-          docker push $DOCKER_USERNAME/taskFlow:$IMAGE_TAG
+          docker push ${{ env.DOCKER_USERNAME }}/taskFlow:${{ env.IMAGE_TAG }}
