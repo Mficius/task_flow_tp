@@ -1,15 +1,16 @@
 name: Mon pipeline
 
-env:
-  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-  IMAGE_TAG: ${{ github.sha }}
-
 on:
   push:
     branches: ["main"]
   pull_request:
     branches: ["main"]
-  
+
+env:
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  IMAGE_TAG: ${{ github.sha }}
+
+
 jobs:
   
   test-frontend:
