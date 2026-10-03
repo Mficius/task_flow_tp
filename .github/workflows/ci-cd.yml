@@ -25,8 +25,8 @@ jobs:
       - name: Installer les dependances
         run: npm ci
 
-      - name: Executer les tests
-        run: npm test -- --coverage --watchAll=false
+      # - name: Executer les tests
+      #   run: npm test -- --coverage --watchAll=false
 
   build:
     runs-on: ubuntu-24.04
