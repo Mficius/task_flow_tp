@@ -1,0 +1,52 @@
+
+name: Mon pipeline
+
+env:
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  IMAGE_TAG: ${{ github.sha }}
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  
+jobs:
+  
+  test-frontend:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Executer Node js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Installer les dependances
+        run: npm ci
+
+      - name: Executer les tests
+        run: npm test -- coverage --watchAll=false
+
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v4
+        with:
+          username: ${{ var.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Construire l'image frontend
+        run: |
+          docker build \
+            -t $DOCKER_USERNAME/taskFlow:$IMAGE_TAG .
+
+      - name: Pusher l'image 
+        run: |
+          docker push $DOCKER_USERNAME/taskFlow:$IMAGE_TAG
