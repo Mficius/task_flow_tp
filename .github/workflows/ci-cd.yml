@@ -22,8 +22,8 @@ jobs:
         with:
           node-version: 22 # Version LTS stable recommandée
 
-      - name: Installer les dependances
-        run: npm ci
+      # - name: Installer les dependances
+      #   run: npm ci
 
       # - name: Executer les tests
       #   run: npm test -- --coverage --watchAll=false
