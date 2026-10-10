@@ -2,9 +2,9 @@ name: Mon pipeline
 
 on:
   push:
-    branches: ["main"]
+    branches: ["master"]
   pull_request:
-    branches: ["main"]
+    branches: ["master"]
 
 env:
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
